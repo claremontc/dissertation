@@ -1,0 +1,3 @@
+flask
+numpy
+tensorflow==2.13.0
