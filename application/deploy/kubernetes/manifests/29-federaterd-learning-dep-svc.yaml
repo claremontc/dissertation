@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: federatedlearningservice
+  labels:
+    app: federatedlearningservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: federatedlearningservice
+  template:
+    metadata:
+      labels:
+        app: federatedlearningservice
+    spec:
+      containers:
+        - name: federatedlearningservice
+          image: crazycoder2345/federated-learning-service
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: federatedlearningservice
+spec:
+  selector:
+    app: federatedlearningservice
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

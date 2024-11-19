@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: node-exporter-role
+rules:
+  - apiGroups: [""]
+    resources: ["endpoints", "endpointslices"]
+    verbs: ["get", "list", "create", "update", "patch"]
+  - apiGroups: ["extensions"]
+    resources: ["replicasets"]
+    verbs: ["get", "list"]
