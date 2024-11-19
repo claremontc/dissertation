@@ -13,6 +13,10 @@ spec:
     metadata:
       labels:
         k8s-app: filebeat
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/stats"
+        prometheus.io/port: "5066"
     spec:
       serviceAccountName: filebeat
       terminationGracePeriodSeconds: 30
@@ -51,3 +55,12 @@ spec:
           path: /var/lib/docker/containers
       - name: data
         emptyDir: {}
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: filebeat
+  namespace: sock-shop
+  annotations:
+        prometheus.io/scrape: 'true'
