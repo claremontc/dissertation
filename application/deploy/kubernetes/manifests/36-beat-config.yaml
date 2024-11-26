@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: beat-exporter-config
+  namespace: monitoring
+data:
+  config.yml: |
+    beats:
+      - host: filebeat
+        port: 5066
+    http:
+      port: 9479

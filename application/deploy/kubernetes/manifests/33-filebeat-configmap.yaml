@@ -2,11 +2,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: filebeat-config
-  namespace: sock-shop
+  namespace: monitoring
 data:
   filebeat.yml: |-
     filebeat.inputs:
-    - type: container
+    - type: filestream
       paths:
         - /var/log/containers/*.log
       processors:
@@ -16,6 +16,24 @@ data:
     http.enabled: true
     http.port: 5066
 
-    output.file:
-      path: "/tmp/filebeat"
-      filename: filebeat
+    output.elasticsearch:
+      hosts: ['http://172.21.212.175:31358/']
+      path: "/"
+      username: "admin"                 
+      password: "Complexpass#123"                 
+      index: "filebeat-logs-%{+yyyy.MM.dd}"
+
+    setup.template.name: "filebeat"      
+    setup.template.pattern: "filebeat-logs-*"  
+
+    logging:
+      level: info
+      to_files: true
+      files:
+        path: /var/log/filebeat
+        name: filebeat
+        keepfiles: 7
+        permissions: 0644
+
+    
+    

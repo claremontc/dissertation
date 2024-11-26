@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: filebeat
-  namespace: sock-shop
+  namespace: monitoring
   labels:
     k8s-app: filebeat
 spec:
@@ -25,8 +25,13 @@ spec:
         image: docker.elastic.co/beats/filebeat:7.17.0
         args: [
           "-c", "/etc/filebeat.yml",
-          "-e",
+          "-e"
         ]
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         securityContext:
           runAsUser: 0
         resources:
@@ -58,9 +63,21 @@ spec:
 
 ---
 apiVersion: v1
-kind: ServiceAccount
+kind: Service
 metadata:
   name: filebeat
-  namespace: sock-shop
-  annotations:
-        prometheus.io/scrape: 'true'
+  namespace: monitoring
+  labels:
+    app: filebeat
+spec:
+  selector:
+    app: filebeat
+  ports:
+    - name: filebeat
+      protocol: TCP
+      port: 5066
+      targetPort: 5066
+      nodePort: 32090
+  type: NodePort
+
+

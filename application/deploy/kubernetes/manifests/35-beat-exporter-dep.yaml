@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: beat-exporter
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: beat-exporter
+  template:
+    metadata:
+      labels:
+        app: beat-exporter
+    spec:
+      containers:
+        - name: beat-exporter
+          image: trustpilot/beat-exporter:latest
+          ports:
+            - containerPort: 9479 
+          volumeMounts:
+            - name: beat-exporter-config-volume
+              mountPath: /config
+      volumes:
+        - name: beat-exporter-config-volume
+          configMap:
+            name: beat-exporter-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: beat-exporter
+  namespace: monitoring
+spec:
+  ports:
+    - port: 9290
+      targetPort: 9479 
+  selector:
+    app: beat-exporter
